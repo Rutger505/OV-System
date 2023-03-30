@@ -11,7 +11,6 @@ public class Chip {
       this.saldo = saldo;
    }
    // getters
-
    /**
     * Get name
     *
@@ -31,15 +30,6 @@ public class Chip {
    }
 
    /**
-    * get ingecheckt
-    *
-    * @return ingecheckt
-    */
-   public boolean isIngeCheckt() {
-      return ingeCheckt;
-   }
-
-   /**
     * get cordsIngeCheckt
     *
     * @param index 0 = x, 1 = y
@@ -47,6 +37,15 @@ public class Chip {
     */
    public int getCordsIngeCheckt(int index) {
       return cordsIngeCheckt[index];
+   }
+
+   /**
+    * get ingecheckt
+    *
+    * @return ingecheckt
+    */
+   public boolean isIngeCheckt() {
+      return ingeCheckt;
    }
 
    // setters
@@ -58,6 +57,7 @@ public class Chip {
    public void changeSaldo(double amount) {
       this.saldo += amount;
    }
+
 
    /**
     * check chip uit
