@@ -1,8 +1,8 @@
 package main;
 
 public class Chip {
-   private String name;
-   private double saldo = 0;
+   private final String name;
+   private double saldo;
    private boolean ingeCheckt = false;
    private final int[] cordsIngeCheckt = new int[2];
 
@@ -10,11 +10,6 @@ public class Chip {
       this.name = name;
       this.saldo = saldo;
    }
-
-   public Chip(String name) {
-      this.name = name;
-   }
-
    // getters
 
    /**

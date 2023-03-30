@@ -1,16 +1,96 @@
 package main;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
 public class OvPaal implements ActionListener {
-   private final int[] location = {1, 43};
+   private final int[] location = new int[2];
 
-   public OvPaal(int x, int y) {
+   private final JPanel paalCityPanel;
+
+   public OvPaal(int x, int y, String cityName) {
       location[0] = x;
       location[1] = y;
+
+      Color buttonBackground = new Color(242, 242, 242);
+
+      JButton paalMaastrichtIn = buttonFactory("Inchecken", this, buttonBackground);
+      JButton paalMaastrichtUit = buttonFactory("Uitchecken", this, buttonBackground);
+
+      paalCityPanel = paalStadFactory(cityName, paalMaastrichtIn, paalMaastrichtUit);
+   }
+
+   /**
+    * Get the city panel with its buttons
+    *
+    * @return panel
+    */
+   public JPanel getPaalCityPanel() {
+      return paalCityPanel;
+   }
+
+   /**
+    * Makes JPanel with a city name and buttons
+    *
+    * @param stadNaam  name of city
+    * @param buttonIn  button to check in
+    * @param buttonUit button to check out
+    * @return panel returns panel
+    */
+   private JPanel paalStadFactory(String stadNaam, JButton buttonIn, JButton buttonUit) {
+      int paalStadWidth = 160;
+      int paalStadHeight = 55;
+
+      JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 10));
+      panel.setPreferredSize(new Dimension(paalStadWidth, paalStadHeight));
+      panel.setBackground(Color.white);
+      JLabel label = labelFactory("Station " + stadNaam);
+
+      panel.add(label);
+      panel.add(buttonIn);
+      panel.add(buttonUit);
+      return panel;
+   }
+
+   /**
+    * Makes JButton
+    *
+    * @param innerText       text to be added in button
+    * @param backgroundColor background color
+    * @return button returns button
+    */
+   private JButton buttonFactory(String innerText, ActionListener action, Color backgroundColor) {
+      int buttonWidth = 70;
+      int buttonHeight = 20;
+
+      JButton button = new JButton();
+      button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+      button.setBorder(null);
+      button.setFocusable(false);
+      button.setOpaque(true);
+
+      button.addActionListener(action);
+      button.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+      button.setText(innerText);
+      button.setBackground(backgroundColor);
+      return button;
+   }
+
+   /**
+    * Makes JLabel
+    *
+    * @param innerText text to be added in label
+    * @return label           returns label
+    */
+   private JLabel labelFactory(String innerText) {
+      JLabel label = new JLabel();
+      label.setHorizontalAlignment(JLabel.CENTER);
+      label.setVerticalAlignment(JLabel.CENTER);
+      label.setText(innerText);
+      return label;
    }
 
    /**
@@ -58,18 +138,26 @@ public class OvPaal implements ActionListener {
    @Override
    public void actionPerformed(ActionEvent e) {
       String buttonText = e.getActionCommand();
+      Chip chip;
+      try {
+         chip = Main.getGUI().getSelectedChip();
+      } catch (Exception ex) {
+         displayMessage("Selecteer eerst een chip!", "Error", JOptionPane.WARNING_MESSAGE);
+         return;
+      }
 
       if (buttonText.equalsIgnoreCase("inchecken")) {
-         inchecken(Main.getGUI().getSelectedChip());
+         inchecken(chip);
       } else if (buttonText.equalsIgnoreCase("uitchecken")) {
-         uitchecken(Main.getGUI().getSelectedChip());
+         uitchecken(chip);
       }
    }
 
    /**
     * Shows a dialog with text
-    * @param message message to show
-    * @param title title of the dialog
+    *
+    * @param message     message to show
+    * @param title       title of the dialog
     * @param messageType type of icon next to message
     */
    private void displayMessage(String message, String title, int messageType) {

@@ -1,7 +1,6 @@
 package main;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -45,6 +44,15 @@ public class NSMachine implements ActionListener {
    public void actionPerformed(ActionEvent e) {
       String buttonText = e.getActionCommand().toLowerCase();
 
+      Chip chip = null;
+      if(!buttonText.equals("ov kopen")){
+         try {
+            chip = Main.getGUI().getSelectedChip();
+         } catch (Exception ex) {
+            displayMessage("Selecteer eerst een chip!", "Error", JOptionPane.WARNING_MESSAGE);
+            return;
+         }
+      }
       switch (buttonText) {
          case "ov kopen" -> {
             String name = getUserInput("Chip naam:", "Chip naam", false);
@@ -53,10 +61,10 @@ public class NSMachine implements ActionListener {
          }
          case "ov opladen" -> {
             double saldo = Double.parseDouble(getUserInput("Hoeveelheid om op te laden:", "Opladen", true));
-            opladen(Main.getGUI().getSelectedChip(), saldo);
+            opladen(chip, saldo);
          }
          case "saldo" -> {
-            String saldo = checkSaldo(Main.getGUI().getSelectedChip());
+            String saldo = checkSaldo(chip);
             displayMessage(saldo, "Saldo", JOptionPane.INFORMATION_MESSAGE);
          }
          default -> displayMessage("Geen knop gevonden", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
@@ -64,11 +72,11 @@ public class NSMachine implements ActionListener {
    }
 
    /**
-    * Gets user input using JOptionPane and retries if the input is nothing
+    * Gets user input using JOptionPane and retries if the input is nothing.
     *
     * @param message message to show in joptionpane
     * @param title   title to show in joptionpane
-    * @param isSaldo if the function should check if input is not number and not under 0
+    * @param isSaldo if the function should check if input is not number and not under 0.
     * @return user input
     */
    private String getUserInput(String message, String title, boolean isSaldo) {

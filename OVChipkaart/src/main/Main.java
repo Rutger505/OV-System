@@ -11,16 +11,16 @@ public class Main {
       NSMachine machine = new NSMachine();
       ArrayList<OvPaal> paalList = new ArrayList<>();
       // ov palen rond Nederland
-      paalList.add(new OvPaal(130, 25));
-      paalList.add(new OvPaal(120, 90));
-      paalList.add(new OvPaal(110, 120));
-      paalList.add(new OvPaal(140, 140));
-      paalList.add(new OvPaal(65, 150));
-      paalList.add(new OvPaal(97, 170));
-      paalList.add(new OvPaal(115, 180));
-      paalList.add(new OvPaal(85, 205));
-      paalList.add(new OvPaal(115, 305));
-      paalList.add(new OvPaal(180, 310));
+      paalList.add(new OvPaal(130, 25, "Maastricht"));
+      paalList.add(new OvPaal(120, 90, "Eindhoven"));
+      paalList.add(new OvPaal(110, 120, "'s-Hertogenbosch" ));
+      paalList.add(new OvPaal(140, 140, "Nijmegen"));
+      paalList.add(new OvPaal(65, 150, "Rotterdam"));
+      paalList.add(new OvPaal(97, 170, "Utrecht"));
+      paalList.add(new OvPaal(115, 180, "Amersfoort"));
+      paalList.add(new OvPaal(85, 205, "Amsterdam"));
+      paalList.add(new OvPaal(115, 305, "Harlingen"));
+      paalList.add(new OvPaal(180, 310, "Groningen"));
       gui = new GUI(paalList, machine);
    }
 
