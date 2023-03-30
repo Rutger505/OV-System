@@ -1,11 +1,24 @@
 package main;
 
+import resources.Constants;
+
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class NSMachine implements ActionListener {
+   private final GUI gui;
+
+   public NSMachine(GUI gui) {
+      this.gui = gui;
+      JButton ovKopenB = gui.buttonFactory("OV kopen", this, 100, 40, true);
+      JButton ovOpladenB = gui.buttonFactory("OV opladen", this, 100, 40, true);
+      JButton saldoB = gui.buttonFactory("Saldo", this, 100, 40, true);
+
+      gui.addNSButton(ovKopenB);
+      gui.addNSButton(ovOpladenB);
+      gui.addNSButton(saldoB);
+   }
 
    /**
     * Laad de chip op
@@ -15,7 +28,7 @@ public class NSMachine implements ActionListener {
     */
    public void opladen(Chip chip, double amount) {
       if (amount <= 0) {
-         displayMessage("(Opladen) Je kan niet €0 of minder opladen", "Error", JOptionPane.WARNING_MESSAGE);
+         displayMessage("(Opladen) Je kan niet €0 of minder opladen", Constants.WARNING_MESSAGE_TITLE, JOptionPane.WARNING_MESSAGE);
          return;
       }
 
@@ -45,56 +58,90 @@ public class NSMachine implements ActionListener {
    public void actionPerformed(ActionEvent e) {
       String buttonText = e.getActionCommand().toLowerCase();
 
+      Chip chip = null;
+      if (!buttonText.equals("ov kopen")) {
+         try {
+            chip = gui.getSelectedChip();
+         } catch (IndexOutOfBoundsException ex) {
+            displayMessage("Selecteer eerst een chip!", Constants.WARNING_MESSAGE_TITLE, JOptionPane.WARNING_MESSAGE);
+            return;
+         }
+      }
       switch (buttonText) {
          case "ov kopen" -> {
             String name = getUserInput("Chip naam:", "Chip naam", false);
-            double saldo = Double.parseDouble(getUserInput("Saldo:", "Saldo", true));
+            if(name == null) {
+               return;
+            }
+            String temp = getUserInput("Saldo:", "Saldo", true);
+            if(temp == null){
+               return;
+            }
+            double saldo = Double.parseDouble(temp);
             Main.addChip(koopKaart(name, saldo));
          }
          case "ov opladen" -> {
-            double saldo = Double.parseDouble(getUserInput("Hoeveelheid om op te laden:", "Opladen", true));
-            opladen(Main.getGUI().getSelectedChip(), saldo);
+            String temp = getUserInput("Hoeveelheid om op te laden:", "Opladen", true);
+            if(temp == null){
+               return;
+            }
+            double saldo = Double.parseDouble(temp);
+            opladen(chip, saldo);
          }
          case "saldo" -> {
-            String saldo = checkSaldo(Main.getGUI().getSelectedChip());
+            String saldo = checkSaldo(chip);
             displayMessage(saldo, "Saldo", JOptionPane.INFORMATION_MESSAGE);
          }
-         default -> displayMessage("Geen knop gevonden", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
+         default -> displayMessage("Geen knop gevonden", Constants.WARNING_MESSAGE_TITLE, JOptionPane.WARNING_MESSAGE);
       }
    }
 
    /**
-    * Gets user input using JOptionPane and retries if the input is nothing
+    * Gets user input using JOptionPane and retries if the input is nothing.
     *
     * @param message message to show in joptionpane
     * @param title   title to show in joptionpane
-    * @param isSaldo if the function should check if input is not number and not under 0
+    * @param isSaldo if the function should check if input is not number and not under 0.
     * @return user input
     */
    private String getUserInput(String message, String title, boolean isSaldo) {
       String input;
-      while (true) {
-         try {
-            input = JOptionPane.showInputDialog(Main.getGUI(), message, title, JOptionPane.QUESTION_MESSAGE);
-            if (input.equals("")) {
-               throw new NullPointerException("Field is required");
-            }
-            if (isSaldo) {
-               double test = Double.parseDouble(input);
-               if (test <= 0) {
-                  throw new Exception("Saldo moet hoger zijn dan 0");
-               }
-            }
-            break;
-         } catch (NullPointerException exception) {
-            displayMessage("Vul het veld eerst in", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
-         } catch (NumberFormatException exception) {
-            displayMessage("Voer alleen maar nummers of decimalen(2.45) in", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
-         } catch (Exception exception) {
-            displayMessage("Het saldo moet meer dan 0 zijn", "Waarschuwing", JOptionPane.WARNING_MESSAGE);
+      while (true){
+         input = JOptionPane.showInputDialog(gui, message, title, JOptionPane.QUESTION_MESSAGE);
+         if(input == null) {
+            return null;
          }
+         if (input.equals("")) {
+            displayMessage("Vul het veld eerst in", Constants.WARNING_MESSAGE_TITLE, JOptionPane.WARNING_MESSAGE);
+            continue;
+         }
+         if (isSaldo) {
+            if (!tryParseDouble(input)) {
+               displayMessage("Voer alleen maar nummers of decimalen(2.45) in", Constants.WARNING_MESSAGE_TITLE, JOptionPane.WARNING_MESSAGE);
+               continue;
+            }
+            if (Double.parseDouble(input) <= 0) {
+               displayMessage("Het saldo moet meer dan 0 zijn", Constants.WARNING_MESSAGE_TITLE, JOptionPane.WARNING_MESSAGE);
+               continue;
+            }
+         }
+         break;
       }
       return input;
+   }
+
+   /**
+    * Checks if input is a double
+    * @param input input to check
+    * @return true or false if input is a double
+    */
+   private boolean tryParseDouble(String input){
+      try {
+         Double.parseDouble(input);
+         return true;
+      } catch (NumberFormatException exception) {
+         return false;
+      }
    }
 
    /**
@@ -105,7 +152,6 @@ public class NSMachine implements ActionListener {
     * @param messageType type of icon next to message
     */
    private void displayMessage(String message, String title, int messageType) {
-      JOptionPane.showMessageDialog(Main.getGUI(), message, title, messageType);
+      JOptionPane.showMessageDialog(gui, message, title, messageType);
    }
-
 }

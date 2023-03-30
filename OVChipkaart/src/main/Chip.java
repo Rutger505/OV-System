@@ -1,8 +1,8 @@
 package main;
 
 public class Chip {
-   private String name;
-   private double saldo = 0;
+   private final String name;
+   private double saldo;
    private boolean ingeCheckt = false;
    private final int[] cordsIngeCheckt = new int[2];
 
@@ -10,13 +10,7 @@ public class Chip {
       this.name = name;
       this.saldo = saldo;
    }
-
-   public Chip(String name) {
-      this.name = name;
-   }
-
    // getters
-
    /**
     * Get name
     *
@@ -36,15 +30,6 @@ public class Chip {
    }
 
    /**
-    * get ingecheckt
-    *
-    * @return ingecheckt
-    */
-   public boolean isIngeCheckt() {
-      return ingeCheckt;
-   }
-
-   /**
     * get cordsIngeCheckt
     *
     * @param index 0 = x, 1 = y
@@ -52,6 +37,15 @@ public class Chip {
     */
    public int getCordsIngeCheckt(int index) {
       return cordsIngeCheckt[index];
+   }
+
+   /**
+    * get ingecheckt
+    *
+    * @return ingecheckt
+    */
+   public boolean isIngeCheckt() {
+      return ingeCheckt;
    }
 
    // setters
@@ -63,6 +57,7 @@ public class Chip {
    public void changeSaldo(double amount) {
       this.saldo += amount;
    }
+
 
    /**
     * check chip uit

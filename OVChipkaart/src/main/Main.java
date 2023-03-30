@@ -8,20 +8,20 @@ public class Main {
    private static GUI gui;
 
    public static void main(String[] args) {
-      NSMachine machine = new NSMachine();
-      ArrayList<OvPaal> paalList = new ArrayList<>();
+      gui = new GUI();
+
+      new NSMachine(gui);
       // ov palen rond Nederland
-      paalList.add(new OvPaal(130, 25));
-      paalList.add(new OvPaal(120, 90));
-      paalList.add(new OvPaal(110, 120));
-      paalList.add(new OvPaal(140, 140));
-      paalList.add(new OvPaal(65, 150));
-      paalList.add(new OvPaal(97, 170));
-      paalList.add(new OvPaal(115, 180));
-      paalList.add(new OvPaal(85, 205));
-      paalList.add(new OvPaal(115, 305));
-      paalList.add(new OvPaal(180, 310));
-      gui = new GUI(paalList, machine);
+      new OvPaal(130, 25, "Maastricht", gui);
+      new OvPaal(120, 90, "Eindhoven", gui);
+      new OvPaal(110, 120, "'s-Hertogenbosch", gui);
+      new OvPaal(140, 140, "Nijmegen", gui);
+      new OvPaal(65, 150, "Rotterdam", gui);
+      new OvPaal(97, 170, "Utrecht", gui);
+      new OvPaal(115, 180, "Amersfoort", gui);
+      new OvPaal(85, 205, "Amsterdam", gui);
+      new OvPaal(115, 305, "Harlingen", gui);
+      new OvPaal(180, 310, "Groningen", gui);
    }
 
    /**
@@ -41,14 +41,5 @@ public class Main {
     */
    public static ArrayList<Chip> getChipList() {
       return chipList;
-   }
-
-   /**
-    * Get the gui
-    *
-    * @return the gui
-    */
-   public static GUI getGUI() {
-      return gui;
    }
 }
